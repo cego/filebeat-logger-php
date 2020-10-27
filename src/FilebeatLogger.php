@@ -56,8 +56,22 @@ class FilebeatLogger extends Logger
         });
     }
 
-    public function throwable(Throwable $throwable): void
+    public function throwable(Throwable $throwable, $level = "critical"): void
     {
+        $message = $throwable->getMessage();
+        if (empty($message)) {
+            $message = get_class($throwable) . " thrown with empty message";
+        }
+        $context = [
+            'error' => [
+                'type' => get_class($throwable),
+                'stack_trace' => $throwable->getTraceAsString(),
+                'code' => $throwable->getCode(),
+                'line' => $throwable->getLine(),
+                'file' => $throwable->getFile()
+            ]
+        ];
+        $this->log($level, $message, $context);
     }
 
     /**
