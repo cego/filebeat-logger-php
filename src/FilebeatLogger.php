@@ -2,6 +2,7 @@
 
 namespace Cego;
 
+use Adbar\Dot;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Throwable;
@@ -51,16 +52,18 @@ class FilebeatLogger extends Logger
         if (empty($message)) {
             $message = get_class($throwable) . " thrown with empty message";
         }
-        $context = [
-            'error' => [
-                'type' => get_class($throwable),
-                'stack_trace' => $throwable->getTraceAsString(),
-                'code' => $throwable->getCode(),
-                'line' => $throwable->getLine(),
-                'file' => $throwable->getFile()
-            ]
-        ];
-        $this->log($level, $message, $context);
+
+        $dot = new Dot();
+
+        $dot->set("error.type", get_class($throwable));
+        $dot->set("error.message", $message);
+        $dot->set("error.code", $throwable->getCode());
+        $dot->set("error.stack_trace", $throwable->getCode());
+
+        $dot->set("log.origin.file.name", $throwable->getFile());
+        $dot->set("log.origin.file.line", $throwable->getLine());
+
+        $this->log($level, $message, $dot->all());
     }
 
 
