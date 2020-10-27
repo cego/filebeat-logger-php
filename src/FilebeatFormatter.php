@@ -49,7 +49,7 @@ class FilebeatFormatter implements FormatterInterface
 
         $elasticRecord['@timestamp'] = $utcDateTime->format("Y-m-d\TH:i:s.u\Z");
         $elasticRecord['log.level'] = $record['level_name'];
-        $elasticRecord['log.type'] = $record['channel'];
+        $elasticRecord['log.channel'] = $record['channel'];
         $elasticRecord['message'] = $record['message'];
         $elasticRecord['log.severity'] = $this->logLevels[$record['level']];
 

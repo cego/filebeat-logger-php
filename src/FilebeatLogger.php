@@ -14,19 +14,19 @@ class FilebeatLogger extends Logger
 {
     /**
      * FilebeatLogger constructor.
-     * @param string $groupName
+     * @param string $channel
      * @return FilebeatLogger
      */
-    public static function createLogger(string $groupName)
+    public static function createLogger(string $channel)
     {
-        return new FilebeatLogger($groupName);
+        return new FilebeatLogger($channel);
     }
 
     /**
      * FilebeatLogger constructor.
-     * @param string $groupName
+     * @param string $channel
      */
-    public function __construct(string $groupName)
+    public function __construct(string $channel)
     {
         $handlers = [
             new StreamHandler("php://stdout", Logger::DEBUG)
@@ -36,7 +36,7 @@ class FilebeatLogger extends Logger
             $handler->setFormatter(new FilebeatFormatter());
         }
 
-        parent::__construct($groupName, $handlers);
+        parent::__construct($channel, $handlers);
 
         $this->pushProcessor(new FilebeatContextProcessor());
 
