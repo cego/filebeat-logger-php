@@ -11,6 +11,6 @@ class FilebeatLoggerFactory
      */
     public function __invoke(array $config)
     {
-        return FilebeatLogger::createLogger($config['groupname'] ?? 'missing groupname');
+        return FilebeatLogger::createLogger($config['channel'] ?? 'missing channel name');
     }
 }
