@@ -3,12 +3,12 @@
     "description": "Package for logging php enriched json lines that filebeat can collect",
     "type": "project",
     "license": "MIT",
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
         "monolog/monolog": "^2.1.1",
-        "ua-parser/uap-php": "^v3.9.14"
+        "ua-parser/uap-php": "^v3.9.14",
+        "adbario/php-dot-notation": "^2.2.0"
     },
     "autoload": {
         "psr-4": {
