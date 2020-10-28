@@ -58,7 +58,7 @@ class FilebeatLogger extends Logger
         $dot->set("error.type", get_class($throwable));
         $dot->set("error.message", $message);
         $dot->set("error.code", $throwable->getCode());
-        $dot->set("error.stack_trace", $throwable->getCode());
+        $dot->set("error.stack_trace", $throwable->getTraceAsString());
 
         $dot->set("log.origin.file.name", $throwable->getFile());
         $dot->set("log.origin.file.line", $throwable->getLine());
