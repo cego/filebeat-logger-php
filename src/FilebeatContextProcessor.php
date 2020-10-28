@@ -128,9 +128,9 @@ class FilebeatContextProcessor
         try {
             $parser = Parser::create();
             $result = $parser->parse($_SERVER['HTTP_USER_AGENT']);
-        } catch (Throwable $ex) {
-            $record['context']['user_agent']['error']['message'] = $ex->getMessage();
-            $record['context']['user_agent']['error']['stack_trace'] = $ex->getTraceAsString();
+        } catch (Throwable $throwable) {
+            $record['context']['user_agent']['error']['message'] = $throwable->getMessage();
+            $record['context']['user_agent']['error']['stack_trace'] = $throwable->getTraceAsString();
             return $record;
         }
 
