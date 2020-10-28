@@ -9,7 +9,7 @@ jobs:
         with:
           tools: php-cs-fixer, cs2pr
           php-version: 7.4
-      - run: php-cs-fixer fix src --format=checkstyle --dry-run | cs2pr
+      - run: php-cs-fixer fix --format=checkstyle --dry-run | cs2pr
   phpstan:
     runs-on: ubuntu-latest
     steps:

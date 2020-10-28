@@ -3,9 +3,9 @@
 namespace Cego;
 
 use DateTimeZone;
-use Monolog\Formatter\FormatterInterface;
-use Monolog\Logger;
 use Monolog\Utils;
+use Monolog\Logger;
+use Monolog\Formatter\FormatterInterface;
 
 /**
  * Class FilebeatFormatter
@@ -13,24 +13,24 @@ use Monolog\Utils;
 class FilebeatFormatter implements FormatterInterface
 {
     private $logLevels = [
-        Logger::DEBUG => 7,
-        Logger::INFO => 6,
-        Logger::NOTICE => 5,
-        Logger::WARNING => 4,
-        Logger::ERROR => 3,
-        Logger::CRITICAL => 2,
-        Logger::ALERT => 1,
+        Logger::DEBUG     => 7,
+        Logger::INFO      => 6,
+        Logger::NOTICE    => 5,
+        Logger::WARNING   => 4,
+        Logger::ERROR     => 3,
+        Logger::CRITICAL  => 2,
+        Logger::ALERT     => 1,
         Logger::EMERGENCY => 0
     ];
 
     private $logLevelToStream = [
-        Logger::DEBUG => 'stdout',
-        Logger::INFO => 'stdout',
-        Logger::NOTICE => 'stdout',
-        Logger::WARNING => 'stderr',
-        Logger::ERROR => 'stderr',
-        Logger::CRITICAL => 'stderr',
-        Logger::ALERT => 'stderr',
+        Logger::DEBUG     => 'stdout',
+        Logger::INFO      => 'stdout',
+        Logger::NOTICE    => 'stdout',
+        Logger::WARNING   => 'stderr',
+        Logger::ERROR     => 'stderr',
+        Logger::CRITICAL  => 'stderr',
+        Logger::ALERT     => 'stderr',
         Logger::EMERGENCY => 'stderr'
     ];
 
