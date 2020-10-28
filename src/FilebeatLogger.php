@@ -51,13 +51,21 @@ class FilebeatLogger extends Logger
         if (empty($message)) {
             $message = get_class($throwable) . " thrown with empty message";
         }
+
         $context = [
             'error' => [
                 'type' => get_class($throwable),
                 'stack_trace' => $throwable->getTraceAsString(),
                 'code' => $throwable->getCode(),
-                'line' => $throwable->getLine(),
-                'file' => $throwable->getFile()
+                'message' => $message
+            ],
+            'log' => [
+                'origin' => [
+                    'file' => [
+                        'name' => $throwable->getFile(),
+                        'line' => $throwable->getLine()
+                    ]
+                ]
             ]
         ];
         $this->log($level, $message, $context);
