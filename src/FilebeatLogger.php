@@ -6,7 +6,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Throwable;
 
-
 /**
  * Class FilebeatLogger
  */
@@ -70,6 +69,4 @@ class FilebeatLogger extends Logger
         ];
         $this->log($level, $message, $context);
     }
-
-
 }

@@ -59,7 +59,7 @@ class FilebeatContextProcessor
     {
         $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
 
-        if (!isset($ip) || $ip === null) {
+        if (!isset($ip) || $ip == null) {
             return $record;
         }
 
@@ -157,5 +157,4 @@ class FilebeatContextProcessor
 
         return $record;
     }
-
 }
