@@ -57,6 +57,7 @@ class FilebeatLogger extends Logger
                 'type' => get_class($throwable),
                 'stack_trace' => $throwable->getTraceAsString(),
                 'code' => $throwable->getCode(),
+                'message' => $message
             ],
             'log' => [
                 'origin' => [
