@@ -49,28 +49,9 @@ class FilebeatLogger extends Logger
 
     public function throwable(Throwable $throwable, $level = "critical"): void
     {
-        $message = $throwable->getMessage();
+        $context = FilebeatContextProcessor::formatThrowable($throwable);
+        $message = $context["error"]["message"];
 
-        if (empty($message)) {
-            $message = get_class($throwable) . " thrown with empty message";
-        }
-
-        $context = [
-            'error' => [
-                'type'        => get_class($throwable),
-                'stack_trace' => $throwable->getTraceAsString(),
-                'code'        => $throwable->getCode(),
-                'message'     => $message
-            ],
-            'log' => [
-                'origin' => [
-                    'file' => [
-                        'name' => $throwable->getFile(),
-                        'line' => $throwable->getLine()
-                    ]
-                ]
-            ]
-        ];
         $this->log($level, $message, $context);
     }
 }
