@@ -33,8 +33,51 @@ class FilebeatContextProcessor
         $record = self::applyUrlContextFields($record);
         $record = self::applyClientContextFields($record);
         $record = self::applyPHPContextFields($record);
+        $record = self::applyExceptionContextFields($record);
 
         return self::applyUserAgentContextFields($record);
+    }
+
+    public static function applyExceptionContextFields(array $record): array
+    {
+        $throwable = $record["context"]["exception"] ?? null;
+
+        // If there are no throwable in the context, then we simply jump out here
+        if ( ! $throwable instanceof Throwable) {
+            return $record;
+        }
+
+        unset($record["context"]["exception"]);
+
+        $record["context"] = array_merge($record["context"], self::formatThrowable($throwable));
+
+        return $record;
+    }
+
+    public static function formatThrowable(Throwable $throwable): array
+    {
+        $message = $throwable->getMessage();
+
+        if (empty($message)) {
+            $message = get_class($throwable) . " thrown with empty message";
+        }
+
+        return [
+            'error' => [
+                'type'        => get_class($throwable),
+                'stack_trace' => $throwable->getTraceAsString(),
+                'code'        => $throwable->getCode(),
+                'message'     => $message
+            ],
+            'log' => [
+                'origin' => [
+                    'file' => [
+                        'name' => $throwable->getFile(),
+                        'line' => $throwable->getLine()
+                    ]
+                ]
+            ]
+        ];
     }
 
     /**
