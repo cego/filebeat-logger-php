@@ -142,7 +142,7 @@ class FilebeatContextProcessor
         }
 
         if ( ! is_array($record["context"]["url"])) {
-            $originalValue = $record["context"]["url"];
+            $originalValue = (string)$record["context"]["url"];
             $record["context"]["url"] = ["original" => $originalValue];
         }
 
