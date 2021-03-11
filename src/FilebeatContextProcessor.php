@@ -141,6 +141,11 @@ class FilebeatContextProcessor
             $record["context"]["url"] = [];
         }
 
+        if ( ! is_array($record["context"]["url"])) {
+            $originalValue = (string)$record["context"]["url"];
+            $record["context"]["url"] = ["original" => $originalValue];
+        }
+
         $record["context"]["url"]['path'] = $_SERVER['REQUEST_URI'] ?? null;
         $record["context"]["url"]['method'] = $_SERVER['REQUEST_METHOD'] ?? null;
         $record["context"]["url"]['referer'] = $_SERVER['HTTP_REFERER'] ?? null;
