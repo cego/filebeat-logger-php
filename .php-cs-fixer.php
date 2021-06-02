@@ -14,7 +14,7 @@ return (new PhpCsFixer\Config)
         'phpdoc_scalar'                    => true,
         'phpdoc_separation'                => true,
         'whitespace_after_comma_in_array'  => true,
-        'method_separation'                => true,
+        'class_attributes_separation'      => true,
         'not_operator_with_space'          => true,
         'no_extra_consecutive_blank_lines' => [
             'tokens' => ['extra']
