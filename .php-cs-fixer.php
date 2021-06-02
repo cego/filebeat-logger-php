@@ -29,7 +29,7 @@ return (new PhpCsFixer\Config)
             'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try', 'foreach', 'if', 'switch', 'do', 'while']
         ],
         'ordered_imports' => [
-            'sortAlgorithm' => 'length'
+            'sort_algorithm' => 'length'
         ]
     ])
     ->setFinder($finder);
