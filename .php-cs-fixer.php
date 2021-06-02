@@ -23,7 +23,7 @@ return (new PhpCsFixer\Config)
             'spacing' => 'one'
         ],
         'binary_operator_spaces' => [
-            'align_double_arrow' => true
+            'align' => true
         ],
         'blank_line_before_statement' => [
             'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try', 'foreach', 'if', 'switch', 'do', 'while']
