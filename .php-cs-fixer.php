@@ -16,7 +16,7 @@ return (new PhpCsFixer\Config)
         'whitespace_after_comma_in_array'  => true,
         'class_attributes_separation'      => true,
         'not_operator_with_space'          => true,
-        'no_extra_consecutive_blank_lines' => [
+        'no_extra_blank_lines' => [
             'tokens' => ['extra']
         ],
         'concat_space' => [
