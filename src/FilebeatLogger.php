@@ -15,23 +15,25 @@ class FilebeatLogger extends Logger
      * FilebeatLogger constructor.
      *
      * @param string $channel
+     * @param string $stream
      *
      * @return FilebeatLogger
      */
-    public static function createLogger(string $channel)
+    public static function createLogger(string $channel, string $stream = 'php://stdout')
     {
-        return new FilebeatLogger($channel);
+        return new FilebeatLogger($channel, $stream);
     }
 
     /**
      * FilebeatLogger constructor.
      *
      * @param string $channel
+     * @param string $stream
      */
-    public function __construct(string $channel)
+    public function __construct(string $channel, string $stream = 'php://stdout')
     {
         $handlers = [
-            new StreamHandler("php://stdout", Logger::DEBUG)
+            new StreamHandler($stream, Logger::DEBUG)
         ];
 
         foreach ($handlers as $handler) {
