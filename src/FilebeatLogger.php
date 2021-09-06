@@ -19,7 +19,7 @@ class FilebeatLogger extends Logger
      *
      * @return static
      */
-    public static function createLogger(string $channel, string $stream = 'php://stdout')
+    final public static function createLogger(string $channel, string $stream = 'php://stdout')
     {
         return new static($channel, $stream);
     }
