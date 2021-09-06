@@ -11,6 +11,10 @@ class FilebeatLoggerFactory
      */
     public function __invoke(array $config): FilebeatLogger
     {
-        return FilebeatLogger::createLogger($config['channel'] ?? 'missing channel name', $config['stream'] ?? 'php://stdout');
+        $channel = $config['channel'] ?? 'missing channel name';
+
+        return ($config['rotating'] ?? false)
+            ? FilebeatLogger::createLogger($channel, $config['stream'] ?? 'php://stdout')
+            : RotatingFilebeatLogger::createLogger($channel, $config['stream'] ?? '/storage/logs/laravel.log');
     }
 }
