@@ -19,7 +19,7 @@ class FilebeatLogger extends Logger
      *
      * @return static
      */
-    final public static function createLogger(string $channel, string $stream = 'php://stdout')
+    public static function createLogger(string $channel, string $stream = 'php://stdout')
     {
         return new static($channel, $stream);
     }
@@ -30,7 +30,7 @@ class FilebeatLogger extends Logger
      * @param string $channel
      * @param string $stream
      */
-    public function __construct(string $channel, string $stream = 'php://stdout')
+    final public function __construct(string $channel, string $stream = 'php://stdout')
     {
         $handlers = $this->getFilebeatHandlers($stream);
 
