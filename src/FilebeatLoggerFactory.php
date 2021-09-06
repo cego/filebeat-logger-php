@@ -9,7 +9,7 @@ class FilebeatLoggerFactory
      *
      * @return FilebeatLogger
      */
-    public function __invoke(array $config)
+    public function __invoke(array $config): FilebeatLogger
     {
         return FilebeatLogger::createLogger($config['channel'] ?? 'missing channel name', $config['stream'] ?? 'php://stdout');
     }
