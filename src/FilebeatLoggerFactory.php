@@ -14,7 +14,7 @@ class FilebeatLoggerFactory
         $channel = $config['channel'] ?? 'missing channel name';
 
         return ($config['rotating'] ?? false)
-            ? FilebeatLogger::createLogger($channel, $config['stream'] ?? 'php://stdout')
-            : RotatingFilebeatLogger::createLogger($channel, $config['stream'] ?? '/storage/logs/laravel.log');
+            ? RotatingFilebeatLogger::createLogger($channel, $config['stream'] ?? 'storage/logs/laravel.log')
+            : FilebeatLogger::createLogger($channel, $config['stream'] ?? 'php://stdout');
     }
 }
