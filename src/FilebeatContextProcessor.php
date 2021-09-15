@@ -64,11 +64,11 @@ class FilebeatContextProcessor
 
         return [
             'error' => [
-                'type'        => get_class($throwable),
-                'stack_trace' => $throwable->getTraceAsString(),
+                'type'             => get_class($throwable),
+                'stack_trace.text' => $throwable->getTraceAsString(),
                 // error.code is type keyword, therefore always cast to string
-                'code'        => (string) $throwable->getCode(),
-                'message'     => $message
+                'code'             => (string) $throwable->getCode(),
+                'message'          => $message
             ],
             'log' => [
                 'origin' => [
