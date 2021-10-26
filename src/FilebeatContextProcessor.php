@@ -7,24 +7,33 @@ use UAParser\Parser;
 
 class FilebeatContextProcessor
 {
+    private array $extras;
+
     /**
      * @param array $record
+     * @param array $extras
      *
      * @return array
      */
-    public function __invoke(array $record): array
+    public function __invoke(array $record, array $extras): array
     {
-        return self::applyContextFields($record);
+        return array_merge_recursive(self::applyContextFields($record), $this->extras);
     }
 
     /**
-     * Apply various fields to context and return new record
-     *
+     * @param array $extras
+     */
+    public function __construct(array $extras = [])
+    {
+        $this->extras = $extras;
+    }
+
+    /**
      * @param array $record
      *
      * @return array
      */
-    private function applyContextFields(array $record)
+    private function applyContextFields(array $record): array
     {
         if ( ! isset($record['context'])) {
             $record['context'] = [];
@@ -38,6 +47,11 @@ class FilebeatContextProcessor
         return self::applyUserAgentContextFields($record);
     }
 
+    /**
+     * @param array $record
+     *
+     * @return array
+     */
     public static function applyExceptionContextFields(array $record): array
     {
         $throwable = $record['context']['exception'] ?? null;
@@ -54,6 +68,11 @@ class FilebeatContextProcessor
         return $record;
     }
 
+    /**
+     * @param Throwable $throwable
+     *
+     * @return array
+     */
     public static function formatThrowable(Throwable $throwable): array
     {
         $message = $throwable->getMessage();
@@ -82,13 +101,11 @@ class FilebeatContextProcessor
     }
 
     /**
-     * Apply php fields and return new record
-     *
      * @param array $record
      *
      * @return array
      */
-    public static function applyPHPContextFields(array $record)
+    public static function applyPHPContextFields(array $record): array
     {
         if ( ! isset($record['context']['php'])) {
             $record['context']['php'] = [];
@@ -102,13 +119,11 @@ class FilebeatContextProcessor
     }
 
     /**
-     * Apply client fields and return new record
-     *
      * @param array $record
      *
      * @return array
      */
-    public static function applyClientContextFields(array $record)
+    public static function applyClientContextFields(array $record): array
     {
         $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
 
@@ -126,13 +141,11 @@ class FilebeatContextProcessor
     }
 
     /**
-     * Apply url fields and return new record
-     *
      * @param array $record
      *
      * @return array
      */
-    public static function applyUrlContextFields(array $record)
+    public static function applyUrlContextFields(array $record): array
     {
         if ( ! isset($_SERVER['REQUEST_URI'])) {
             return $record;
@@ -170,13 +183,11 @@ class FilebeatContextProcessor
     }
 
     /**
-     * Apply user agent fields and return new record
-     *
      * @param array $record
      *
      * @return array
      */
-    private static function applyUserAgentContextFields(array $record)
+    private static function applyUserAgentContextFields(array $record): array
     {
         if ( ! isset($_SERVER['HTTP_USER_AGENT'])) {
             return $record;

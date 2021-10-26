@@ -7,12 +7,12 @@ use Monolog\Utils;
 use Monolog\Logger;
 use Monolog\Formatter\FormatterInterface;
 
-/**
- * Class FilebeatFormatter
- */
 class FilebeatFormatter implements FormatterInterface
 {
-    private $logLevels = [
+    /**
+     * @var array
+     */
+    private array $logLevels = [
         Logger::DEBUG     => 7,
         Logger::INFO      => 6,
         Logger::NOTICE    => 5,
@@ -23,7 +23,10 @@ class FilebeatFormatter implements FormatterInterface
         Logger::EMERGENCY => 0,
     ];
 
-    private $logLevelToStream = [
+    /**
+     * @var array
+     */
+    private array $logLevelToStream = [
         Logger::DEBUG     => 'stdout',
         Logger::INFO      => 'stdout',
         Logger::NOTICE    => 'stdout',
@@ -35,13 +38,11 @@ class FilebeatFormatter implements FormatterInterface
     ];
 
     /**
-     * Formats logger record
-     *
      * @param array $record
      *
-     * @return string JSON with a trailing newline
+     * @return string
      */
-    public function format(array $record)
+    public function format(array $record): string
     {
         $elasticRecord = [];
 
@@ -65,13 +66,11 @@ class FilebeatFormatter implements FormatterInterface
     }
 
     /**
-     * Formats multiple logger record
-     *
      * @param array $records
      *
      * @return array
      */
-    public function formatBatch(array $records)
+    public function formatBatch(array $records): array
     {
         foreach ($records as $key => $record) {
             $records[$key] = $this->format($record);

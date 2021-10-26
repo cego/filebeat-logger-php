@@ -6,31 +6,26 @@ use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-/**
- * Class FilebeatLogger
- */
 class FilebeatLogger extends Logger
 {
     /**
-     * FilebeatLogger constructor.
-     *
      * @param string $channel
      * @param string $stream
+     * @param array $extras
      *
      * @return static
      */
-    public static function createLogger(string $channel, string $stream = 'php://stdout')
+    public static function createLogger(string $channel, string $stream = 'php://stdout', array $extras = []): FilebeatLogger
     {
-        return new static($channel, $stream);
+        return new static($channel, $stream, $extras);
     }
 
     /**
-     * FilebeatLogger constructor.
-     *
      * @param string $channel
      * @param string $stream
+     * @param array $extras
      */
-    final public function __construct(string $channel, string $stream = 'php://stdout')
+    final public function __construct(string $channel, string $stream = 'php://stdout', array $extras = [])
     {
         $handlers = $this->getFilebeatHandlers($stream);
 
@@ -40,7 +35,7 @@ class FilebeatLogger extends Logger
 
         parent::__construct($channel, $handlers);
 
-        $this->pushProcessor(new FilebeatContextProcessor());
+        $this->pushProcessor(new FilebeatContextProcessor($extras));
 
         $this->setExceptionHandler(function (Throwable $throwable): void {
             error_log("$throwable");
@@ -48,8 +43,6 @@ class FilebeatLogger extends Logger
     }
 
     /**
-     * Returns the file handlers which should be used for the FileBeatLogger
-     *
      * @param string $stream
      *
      * @return StreamHandler[]
@@ -61,6 +54,10 @@ class FilebeatLogger extends Logger
         ];
     }
 
+    /**
+     * @param Throwable $throwable
+     * @param mixed $level
+     */
     public function throwable(Throwable $throwable, $level = 'critical'): void
     {
         $context = FilebeatContextProcessor::formatThrowable($throwable);
