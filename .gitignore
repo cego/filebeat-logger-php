@@ -2,4 +2,3 @@
 /vendor/
 .php_cs.cache
 *.cache
-composer.lock
