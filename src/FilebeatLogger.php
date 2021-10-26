@@ -57,14 +57,14 @@ class FilebeatLogger extends Logger
     protected function getFilebeatHandlers(string $stream): array
     {
         return [
-            new StreamHandler($stream, Logger::DEBUG)
+            new StreamHandler($stream, Logger::DEBUG),
         ];
     }
 
-    public function throwable(Throwable $throwable, $level = "critical"): void
+    public function throwable(Throwable $throwable, $level = 'critical'): void
     {
         $context = FilebeatContextProcessor::formatThrowable($throwable);
-        $message = $context["error"]["message"];
+        $message = $context['error']['message'];
 
         $this->log($level, $message, $context);
     }
