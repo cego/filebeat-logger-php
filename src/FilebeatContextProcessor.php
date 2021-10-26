@@ -26,8 +26,8 @@ class FilebeatContextProcessor
      */
     private function applyContextFields(array $record)
     {
-        if ( ! isset($record["context"])) {
-            $record["context"] = [];
+        if ( ! isset($record['context'])) {
+            $record['context'] = [];
         }
 
         $record = self::applyUrlContextFields($record);
@@ -40,16 +40,16 @@ class FilebeatContextProcessor
 
     public static function applyExceptionContextFields(array $record): array
     {
-        $throwable = $record["context"]["exception"] ?? null;
+        $throwable = $record['context']['exception'] ?? null;
 
         // If there are no throwable in the context, then we simply jump out here
         if ( ! $throwable instanceof Throwable) {
             return $record;
         }
 
-        unset($record["context"]["exception"]);
+        unset($record['context']['exception']);
 
-        $record["context"] = array_merge($record["context"], self::formatThrowable($throwable));
+        $record['context'] = array_merge($record['context'], self::formatThrowable($throwable));
 
         return $record;
     }
@@ -59,7 +59,7 @@ class FilebeatContextProcessor
         $message = $throwable->getMessage();
 
         if (empty($message)) {
-            $message = get_class($throwable) . " thrown with empty message";
+            $message = get_class($throwable) . ' thrown with empty message';
         }
 
         return [
@@ -67,17 +67,17 @@ class FilebeatContextProcessor
                 'type'        => get_class($throwable),
                 'stack_trace' => $throwable->getTraceAsString(),
                 // error.code is type keyword, therefore always cast to string
-                'code'        => (string) $throwable->getCode(),
-                'message'     => $message
+                'code'    => (string) $throwable->getCode(),
+                'message' => $message,
             ],
             'log' => [
                 'origin' => [
                     'file' => [
                         'name' => $throwable->getFile(),
-                        'line' => $throwable->getLine()
-                    ]
-                ]
-            ]
+                        'line' => $throwable->getLine(),
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -90,13 +90,13 @@ class FilebeatContextProcessor
      */
     public static function applyPHPContextFields(array $record)
     {
-        if ( ! isset($record["context"]["php"])) {
-            $record["context"]["php"] = [];
+        if ( ! isset($record['context']['php'])) {
+            $record['context']['php'] = [];
         }
 
-        $record["context"]["php"]['sapi']        = PHP_SAPI;
-        $record["context"]["php"]['argc']        = $_SERVER['argc'] ?? null;
-        $record["context"]["php"]['argv_string'] = $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null;
+        $record['context']['php']['sapi'] = PHP_SAPI;
+        $record['context']['php']['argc'] = $_SERVER['argc'] ?? null;
+        $record['context']['php']['argv_string'] = $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null;
 
         return $record;
     }
@@ -116,11 +116,11 @@ class FilebeatContextProcessor
             return $record;
         }
 
-        if ( ! isset($record["context"]["client"])) {
-            $record["context"]["client"] = [];
+        if ( ! isset($record['context']['client'])) {
+            $record['context']['client'] = [];
         }
 
-        $record["context"]["client"]["ip"] = $ip;
+        $record['context']['client']['ip'] = $ip;
 
         return $record;
     }
@@ -138,33 +138,33 @@ class FilebeatContextProcessor
             return $record;
         }
 
-        if ( ! isset($record["context"]["url"])) {
-            $record["context"]["url"] = [];
+        if ( ! isset($record['context']['url'])) {
+            $record['context']['url'] = [];
         }
 
-        if ( ! is_array($record["context"]["url"])) {
-            $originalValue            = (string)$record["context"]["url"];
-            $record["context"]["url"] = ["original" => $originalValue];
+        if ( ! is_array($record['context']['url'])) {
+            $originalValue = (string)$record['context']['url'];
+            $record['context']['url'] = ['original' => $originalValue];
         }
 
-        $record["context"]["url"]['path']    = $_SERVER['REQUEST_URI']    ?? null;
-        $record["context"]["url"]['method']  = $_SERVER['REQUEST_METHOD'] ?? null;
-        $record["context"]["url"]['referer'] = $_SERVER['HTTP_REFERER']   ?? null;
-        $record["context"]["url"]['domain']  = $_SERVER['HTTP_HOST']      ?? null;
+        $record['context']['url']['path'] = $_SERVER['REQUEST_URI'] ?? null;
+        $record['context']['url']['method'] = $_SERVER['REQUEST_METHOD'] ?? null;
+        $record['context']['url']['referer'] = $_SERVER['HTTP_REFERER'] ?? null;
+        $record['context']['url']['domain'] = $_SERVER['HTTP_HOST'] ?? null;
 
-        if ( ! isset($record["context"]["url"]["headers"])) {
-            $record["context"]["url"]["headers"] = [];
+        if ( ! isset($record['context']['url']['headers'])) {
+            $record['context']['url']['headers'] = [];
         }
 
-        $record["context"]["url"]["headers"]["cf-request-id"]                        = $_SERVER['HTTP_CF_REQUEST_ID']                        ?? null;
-        $record["context"]["url"]["headers"]["cf-ray"]                               = $_SERVER['HTTP_CF_RAY']                               ?? null;
-        $record["context"]["url"]["headers"]["cf-warp-tag-id"]                       = $_SERVER['HTTP_CF_WARP_TAG_ID']                       ?? null;
-        $record["context"]["url"]["headers"]["cf-visitor"]                           = $_SERVER['HTTP_CF_VISITOR']                           ?? null;
-        $record["context"]["url"]["headers"]["cf-ipcountry"]                         = $_SERVER['HTTP_CF_IPCOUNTRY']                         ?? null;
-        $record["context"]["url"]["headers"]["cf-cloudflared-proxy-tunnel-hostname"] = $_SERVER['HTTP_CF_CLOUDFLARED_PROXY_TUNNEL_HOSTNAME'] ?? null;
-        $record["context"]["url"]["headers"]["x-forwarded-proto"]                    = $_SERVER['HTTP_X_FORWARDED_PROTO']                    ?? null;
-        $record["context"]["url"]["headers"]["x-forwarded-for"]                      = $_SERVER['HTTP_X_FORWARDED_FOR']                      ?? null;
-        $record["context"]["url"]["headers"]["x-forwarded-host"]                     = $_SERVER['HTTP_X_FORWARDED_HOST']                     ?? null;
+        $record['context']['url']['headers']['cf-request-id'] = $_SERVER['HTTP_CF_REQUEST_ID'] ?? null;
+        $record['context']['url']['headers']['cf-ray'] = $_SERVER['HTTP_CF_RAY'] ?? null;
+        $record['context']['url']['headers']['cf-warp-tag-id'] = $_SERVER['HTTP_CF_WARP_TAG_ID'] ?? null;
+        $record['context']['url']['headers']['cf-visitor'] = $_SERVER['HTTP_CF_VISITOR'] ?? null;
+        $record['context']['url']['headers']['cf-ipcountry'] = $_SERVER['HTTP_CF_IPCOUNTRY'] ?? null;
+        $record['context']['url']['headers']['cf-cloudflared-proxy-tunnel-hostname'] = $_SERVER['HTTP_CF_CLOUDFLARED_PROXY_TUNNEL_HOSTNAME'] ?? null;
+        $record['context']['url']['headers']['x-forwarded-proto'] = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null;
+        $record['context']['url']['headers']['x-forwarded-for'] = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
+        $record['context']['url']['headers']['x-forwarded-host'] = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? null;
 
         return $record;
     }
@@ -182,39 +182,39 @@ class FilebeatContextProcessor
             return $record;
         }
 
-        if ( ! isset($record["context"]["user_agent"])) {
-            $record["context"]["user_agent"] = [];
+        if ( ! isset($record['context']['user_agent'])) {
+            $record['context']['user_agent'] = [];
         }
 
-        $record["context"]["user_agent"]["original"] = $_SERVER['HTTP_USER_AGENT'];
+        $record['context']['user_agent']['original'] = $_SERVER['HTTP_USER_AGENT'];
 
         try {
             $parser = Parser::create();
             $result = $parser->parse($_SERVER['HTTP_USER_AGENT']);
         } catch (Throwable $throwable) {
-            $record['context']['user_agent']['error']['message']     = $throwable->getMessage();
+            $record['context']['user_agent']['error']['message'] = $throwable->getMessage();
             $record['context']['user_agent']['error']['stack_trace'] = $throwable->getTraceAsString();
 
             return $record;
         }
 
-        if ( ! isset($record["context"]["user_agent"]["browser"])) {
-            $record["context"]["user_agent"]["browser"] = [];
+        if ( ! isset($record['context']['user_agent']['browser'])) {
+            $record['context']['user_agent']['browser'] = [];
         }
 
-        $record['context']['user_agent']['browser']['name']  = $result->ua->family;
+        $record['context']['user_agent']['browser']['name'] = $result->ua->family;
         $record['context']['user_agent']['browser']['major'] = $result->ua->major;
         $record['context']['user_agent']['browser']['minor'] = $result->ua->minor;
         $record['context']['user_agent']['browser']['patch'] = $result->ua->patch;
 
-        if ( ! isset($record["context"]["user_agent"]["os"])) {
-            $record["context"]["user_agent"]["os"] = [];
+        if ( ! isset($record['context']['user_agent']['os'])) {
+            $record['context']['user_agent']['os'] = [];
         }
 
-        $record['context']['user_agent']['os']['name']        = $result->os->family;
-        $record['context']['user_agent']['os']['major']       = $result->os->major;
-        $record['context']['user_agent']['os']['minor']       = $result->os->minor;
-        $record['context']['user_agent']['os']['patch']       = $result->os->patch;
+        $record['context']['user_agent']['os']['name'] = $result->os->family;
+        $record['context']['user_agent']['os']['major'] = $result->os->major;
+        $record['context']['user_agent']['os']['minor'] = $result->os->minor;
+        $record['context']['user_agent']['os']['patch'] = $result->os->patch;
         $record['context']['user_agent']['os']['patch_minor'] = $result->os->patchMinor;
 
         $record['context']['user_agent']['device.name'] = $result->device->family;

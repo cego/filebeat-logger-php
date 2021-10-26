@@ -20,7 +20,7 @@ class FilebeatFormatter implements FormatterInterface
         Logger::ERROR     => 3,
         Logger::CRITICAL  => 2,
         Logger::ALERT     => 1,
-        Logger::EMERGENCY => 0
+        Logger::EMERGENCY => 0,
     ];
 
     private $logLevelToStream = [
@@ -31,7 +31,7 @@ class FilebeatFormatter implements FormatterInterface
         Logger::ERROR     => 'stderr',
         Logger::CRITICAL  => 'stderr',
         Logger::ALERT     => 'stderr',
-        Logger::EMERGENCY => 'stderr'
+        Logger::EMERGENCY => 'stderr',
     ];
 
     /**
@@ -47,10 +47,10 @@ class FilebeatFormatter implements FormatterInterface
 
         $utcDateTime = $record['datetime']->setTimeZone(new DateTimeZone('UTC'));
 
-        $elasticRecord['@timestamp']   = $utcDateTime->format("Y-m-d\TH:i:s.u\Z");
-        $elasticRecord['log.level']    = $record['level_name'];
-        $elasticRecord['log.channel']  = $record['channel'];
-        $elasticRecord['message']      = $record['message'];
+        $elasticRecord['@timestamp'] = $utcDateTime->format("Y-m-d\TH:i:s.u\Z");
+        $elasticRecord['log.level'] = $record['level_name'];
+        $elasticRecord['log.channel'] = $record['channel'];
+        $elasticRecord['message'] = $record['message'];
         $elasticRecord['log.severity'] = $this->logLevels[$record['level']];
 
         foreach ($record['context'] as $key => $value) {
