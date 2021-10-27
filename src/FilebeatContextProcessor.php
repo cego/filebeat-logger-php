@@ -11,13 +11,12 @@ class FilebeatContextProcessor
 
     /**
      * @param array $record
-     * @param array $extras
      *
      * @return array
      */
-    public function __invoke(array $record, array $extras): array
+    public function __invoke(array $record): array
     {
-        return array_merge_recursive(self::applyContextFields($record), $this->extras);
+        return array_merge_recursive(self::applyContextFields($record), ['context' => $this->extras]);
     }
 
     /**
