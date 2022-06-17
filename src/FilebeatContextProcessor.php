@@ -134,7 +134,7 @@ class FilebeatContextProcessor
             $record['context']['client'] = [];
         }
 
-        $record['context']['client']['ip'] = $ip;
+        $record['context']['client']['ip'] = isset($_SERVER['REMOTE_ADDR']) ? explode(',', $_SERVER['REMOTE_ADDR'])[0] : null;
 
         return $record;
     }
