@@ -134,7 +134,8 @@ class FilebeatContextProcessor
             $record['context']['client'] = [];
         }
 
-        $record['context']['client']['ip'] = $ip;
+        $record['context']['client']['ip'] = explode(',', $ip);
+        $record['context']['client']['address'] = $ip;
 
         return $record;
     }
