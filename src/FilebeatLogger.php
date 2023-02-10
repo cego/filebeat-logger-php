@@ -2,6 +2,7 @@
 
 namespace Cego;
 
+use Psr\Log\LogLevel;
 use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
