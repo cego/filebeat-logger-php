@@ -58,7 +58,7 @@ class FilebeatLogger extends Logger
      * @param Throwable $throwable
      * @param Logger::DEBUG|Logger::INFO|Logger::NOTICE|Logger::WARNING|Logger::ERROR|Logger::CRITICAL|Logger::ALERT|Logger::EMERGENCY $level
      */
-    public function throwable(Throwable $throwable, $level = 'critical'): void
+    public function throwable(Throwable $throwable, $level = 'CRITICAL'): void
     {
         $context = FilebeatContextProcessor::formatThrowable($throwable);
         $message = $context['error']['message'];
