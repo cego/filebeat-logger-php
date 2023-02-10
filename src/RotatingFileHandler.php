@@ -21,10 +21,13 @@ class RotatingFileHandler extends StreamHandler
     protected $mustRotate;
 
     /**
+     * @phpstan-import-type Level from Logger
+     * @phpstan-import-type LevelName from Logger
+     * @phpstan-import-type LogLevel from Logger
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param Logger::DEBUG|Logger::INFO|Logger::NOTICE|Logger::WARNING|Logger::ERROR|Logger::CRITICAL|Logger::ALERT|Logger::EMERGENCY $level
+     * @param Level|LevelName|LogLevel $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
