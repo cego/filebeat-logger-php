@@ -2,9 +2,7 @@
 
 namespace Cego;
 
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\RotatingFileHandler;
 
 class RotatingFilebeatLogger extends FilebeatLogger
 {
@@ -15,8 +13,10 @@ class RotatingFilebeatLogger extends FilebeatLogger
      */
     protected function getFilebeatHandlers(string $stream): array
     {
+        $maxFiles = 5;
+        $maxFileSize = 104857600; // 100MB
         return [
-            new RotatingFileHandler($stream, 4, Logger::DEBUG),
+            new RotatingFileHandler($stream, $maxFiles, $maxFileSize),
         ];
     }
 }

@@ -16,7 +16,7 @@
         }
     },
     "require-dev": {
-        "cego/php-cs-fixer": "^1.0.0",
-        "phpstan/phpstan": "^1.0.0"
+        "cego/php-cs-fixer": "1.0.0",
+        "phpstan/phpstan": "1.9.17"
     }
 }
