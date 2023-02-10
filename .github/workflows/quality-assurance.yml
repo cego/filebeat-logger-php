@@ -1,7 +1,10 @@
 ---
-push:
-  branches: [master]
-  pull_request:
+on:
+  push:
+    tags-ignore: ['**']
+    branches: [master]
+    pull_request:
+
 name: lint
 jobs:
   php-cs-fixer:
