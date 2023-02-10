@@ -8,16 +8,23 @@ use Monolog\Handler\StreamHandler;
 
 class RotatingFileHandler extends StreamHandler
 {
+    /** @var string */
     protected $filename;
+
+    /** @var number */
     protected $maxFiles;
+
+    /** @var number */
     protected $maxFileSize;
+
+    /** @var boolean */
     protected $mustRotate;
 
     /**
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param LogLevel $level
+     * @param mixed $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
