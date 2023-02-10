@@ -24,7 +24,7 @@ class RotatingFileHandler extends StreamHandler
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param mixed $level
+     * @param Logger::DEBUG|Logger::INFO|Logger::NOTICE|Logger::WARNING|Logger::ERROR|Logger::CRITICAL|Logger::ALERT|Logger::EMERGENCY $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking

@@ -56,7 +56,7 @@ class FilebeatLogger extends Logger
 
     /**
      * @param Throwable $throwable
-     * @param mixed $level
+     * @param Logger::DEBUG|Logger::INFO|Logger::NOTICE|Logger::WARNING|Logger::ERROR|Logger::CRITICAL|Logger::ALERT|Logger::EMERGENCY $level
      */
     public function throwable(Throwable $throwable, $level = 'critical'): void
     {
