@@ -55,9 +55,9 @@ class FilebeatLogger extends Logger
     }
 
     /**
-     * @phpstan-import-type Level from Logger
-     * @phpstan-import-type LevelName from Logger
-     * @phpstan-import-type LogLevel from Logger
+     * @phpstan-import-type Level from \Monolog\Logger
+     * @phpstan-import-type LevelName from \Monolog\Logger
+     * @phpstan-import-type LogLevel from \Monolog\Logger
      * @param Throwable $throwable
      * @param Level|LevelName|LogLevel $level
      */
