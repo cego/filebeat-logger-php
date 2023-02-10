@@ -60,7 +60,7 @@ class FilebeatLogger extends Logger
      * @phpstan-import-type LevelName from Logger
      *
      * @param Throwable $throwable
-     * @param Level|LevelName|LogLevel::* $level
+     * @param Level::*|LevelName::*|LogLevel::* $level
      */
     public function throwable(Throwable $throwable, $level = 'critical'): void
     {
