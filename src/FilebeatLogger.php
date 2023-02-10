@@ -55,13 +55,13 @@ class FilebeatLogger extends Logger
     }
 
     /**
-     * @phpstan-import-type Level from \Monolog\Logger
-     * @phpstan-import-type LevelName from \Monolog\Logger
-     * @phpstan-import-type LogLevel from \Monolog\Logger
+     * @phpstan-import-type Level from Logger
+     * @phpstan-import-type LevelName from Logger
+     *
      * @param Throwable $throwable
-     * @param Level|LevelName|LogLevel $level
+     * @param Level|LevelName|LogLevel::* $level
      */
-    public function throwable(Throwable $throwable, $level = 'CRITICAL'): void
+    public function throwable(Throwable $throwable, $level = 'critical'): void
     {
         $context = FilebeatContextProcessor::formatThrowable($throwable);
         $message = $context['error']['message'];
