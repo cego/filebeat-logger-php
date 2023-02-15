@@ -4,19 +4,24 @@ namespace Cego;
 
 use Throwable;
 use UAParser\Parser;
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
 
-class FilebeatContextProcessor
+class FilebeatContextProcessor implements ProcessorInterface
 {
     private array $extras;
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
-        return array_merge_recursive(self::applyContextFields($record), ['context' => $this->extras]);
+        $record->extra = array_merge($record->extra, $this->extras);
+        $record->extra = array_merge($record->extra, ['http' => self::httpExtras()]);
+        $record->extra = array_merge($record->extra, ['url' => self::urlExtras()]);
+        $record->extra = array_merge($record->extra, ['client' => self::clientExtras()]);
+        $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
+        $record->extra = array_merge($record->extra, ['user_agent' => self::userAgentExtras()]);
+        $record->extra = array_merge($record->extra, ['error' => self::errorExtras($record)]);
+
+        return $record;
     }
 
     /**
@@ -27,58 +32,17 @@ class FilebeatContextProcessor
         $this->extras = $extras;
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    private function applyContextFields(array $record): array
+    public static function errorExtras(LogRecord $record): array
     {
-        if ( ! isset($record['context'])) {
-            $record['context'] = [];
-        }
-
-        $record = self::applyUrlContextFields($record);
-        $record = self::applyClientContextFields($record);
-        $record = self::applyPHPContextFields($record);
-        $record = self::applyExceptionContextFields($record);
-
-        return self::applyUserAgentContextFields($record);
-    }
-
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    public static function applyExceptionContextFields(array $record): array
-    {
-        $throwable = $record['context']['exception'] ?? null;
-
+        $throwable = $record->context['exception'] ?? null;
         // If there are no throwable in the context, then we simply jump out here
         if ( ! $throwable instanceof Throwable) {
-            return $record;
+            return [];
         }
+        unset($record->context['exception']);
 
-        unset($record['context']['exception']);
-
-        $record['context'] = array_merge($record['context'], self::formatThrowable($throwable));
-
-        return $record;
-    }
-
-    /**
-     * @param Throwable $throwable
-     *
-     * @return array
-     */
-    public static function formatThrowable(Throwable $throwable): array
-    {
         $message = $throwable->getMessage();
-
-        if (empty($message)) {
-            $message = get_class($throwable) . ' thrown with empty message';
-        }
+        $message = empty($message) ? get_class($throwable) . ' thrown with empty message' : $message;
 
         return [
             'error' => [
@@ -99,137 +63,83 @@ class FilebeatContextProcessor
         ];
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    public static function applyPHPContextFields(array $record): array
+    public static function phpExtras(): array
     {
-        if ( ! isset($record['context']['php'])) {
-            $record['context']['php'] = [];
-        }
-
-        $record['context']['php']['sapi'] = PHP_SAPI;
-        $record['context']['php']['argc'] = $_SERVER['argc'] ?? null;
-        $record['context']['php']['argv_string'] = $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null;
-
-        return $record;
+        return [
+            'sapi'        => PHP_SAPI,
+            'argc'        => $_SERVER['argc'] ?? null,
+            'argv_string' => $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null,
+        ];
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    public static function applyClientContextFields(array $record): array
+    public static function clientExtras(): array
     {
-        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
-
-        if ( ! isset($ip) || $ip == null) {
-            return $record;
-        }
-
-        if ( ! isset($record['context']['client'])) {
-            $record['context']['client'] = [];
-        }
-
-        $record['context']['client']['ip'] = explode(',', $ip);
-        $record['context']['client']['address'] = $ip;
-
-        return $record;
+        return [
+            'ip'      => $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? null,
+            'address' => $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null,
+            'geo'     => [
+                'country_iso_code' => $_SERVER['HTTP_CF_IPCOUNTRY'] ?? null,
+            ],
+        ];
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    public static function applyUrlContextFields(array $record): array
+    public static function httpExtras(): array
     {
-        if ( ! isset($_SERVER['REQUEST_URI'])) {
-            return $record;
-        }
-
-        if ( ! isset($record['context']['url'])) {
-            $record['context']['url'] = [];
-        }
-
-        if ( ! is_array($record['context']['url'])) {
-            $originalValue = (string)$record['context']['url'];
-            $record['context']['url'] = ['original' => $originalValue];
-        }
-
-        $record['context']['url']['path'] = $_SERVER['REQUEST_URI'] ?? null;
-        $record['context']['url']['method'] = $_SERVER['REQUEST_METHOD'] ?? null;
-        $record['context']['url']['referer'] = $_SERVER['HTTP_REFERER'] ?? null;
-        $record['context']['url']['domain'] = $_SERVER['HTTP_HOST'] ?? null;
-
-        if ( ! isset($record['context']['url']['headers'])) {
-            $record['context']['url']['headers'] = [];
-        }
-
-        $record['context']['url']['headers']['cf-request-id'] = $_SERVER['HTTP_CF_REQUEST_ID'] ?? null;
-        $record['context']['url']['headers']['cf-ray'] = $_SERVER['HTTP_CF_RAY'] ?? null;
-        $record['context']['url']['headers']['cf-warp-tag-id'] = $_SERVER['HTTP_CF_WARP_TAG_ID'] ?? null;
-        $record['context']['url']['headers']['cf-visitor'] = $_SERVER['HTTP_CF_VISITOR'] ?? null;
-        $record['context']['url']['headers']['cf-ipcountry'] = $_SERVER['HTTP_CF_IPCOUNTRY'] ?? null;
-        $record['context']['url']['headers']['cf-cloudflared-proxy-tunnel-hostname'] = $_SERVER['HTTP_CF_CLOUDFLARED_PROXY_TUNNEL_HOSTNAME'] ?? null;
-        $record['context']['url']['headers']['x-forwarded-proto'] = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null;
-        $record['context']['url']['headers']['x-forwarded-for'] = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
-        $record['context']['url']['headers']['x-forwarded-host'] = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? null;
-
-        return $record;
+        return [
+            'request' => [
+                'id'     => $_SERVER['HTTP_CF_RAY'] ?? null,
+                'method' => $_SERVER['REQUEST_METHOD'] ?? null,
+            ],
+        ];
     }
 
-    /**
-     * @param array $record
-     *
-     * @return array
-     */
-    private static function applyUserAgentContextFields(array $record): array
+    public static function urlExtras(): array
     {
-        if ( ! isset($_SERVER['HTTP_USER_AGENT'])) {
-            return $record;
-        }
+        return [
+            'path'    => $_SERVER['REQUEST_URI'] ?? null,
+            'method'  => $_SERVER['REQUEST_METHOD'] ?? null,
+            'referer' => $_SERVER['HTTP_REFERER'] ?? null,
+            'domain'  => $_SERVER['HTTP_HOST'] ?? null,
+        ];
+    }
 
-        if ( ! isset($record['context']['user_agent'])) {
-            $record['context']['user_agent'] = [];
-        }
+    private static function userAgentExtras(): array
+    {
+        $original = $_SERVER['HTTP_USER_AGENT'];
 
-        $record['context']['user_agent']['original'] = $_SERVER['HTTP_USER_AGENT'];
+        if ( ! isset($original)) {
+            return [];
+        }
 
         try {
             $parser = Parser::create();
-            $result = $parser->parse($_SERVER['HTTP_USER_AGENT']);
+            $result = $parser->parse($original);
         } catch (Throwable $throwable) {
-            $record['context']['user_agent']['error']['message'] = $throwable->getMessage();
-            $record['context']['user_agent']['error']['stack_trace'] = $throwable->getTraceAsString();
-
-            return $record;
+            return [
+                'original' => $original,
+                'error'    => [
+                    'message'     => $throwable->getMessage(),
+                    'stack_trace' => $throwable->getTraceAsString(),
+                ],
+            ];
         }
 
-        if ( ! isset($record['context']['user_agent']['browser'])) {
-            $record['context']['user_agent']['browser'] = [];
-        }
-
-        $record['context']['user_agent']['browser']['name'] = $result->ua->family;
-        $record['context']['user_agent']['browser']['major'] = $result->ua->major;
-        $record['context']['user_agent']['browser']['minor'] = $result->ua->minor;
-        $record['context']['user_agent']['browser']['patch'] = $result->ua->patch;
-
-        if ( ! isset($record['context']['user_agent']['os'])) {
-            $record['context']['user_agent']['os'] = [];
-        }
-
-        $record['context']['user_agent']['os']['name'] = $result->os->family;
-        $record['context']['user_agent']['os']['major'] = $result->os->major;
-        $record['context']['user_agent']['os']['minor'] = $result->os->minor;
-        $record['context']['user_agent']['os']['patch'] = $result->os->patch;
-        $record['context']['user_agent']['os']['patch_minor'] = $result->os->patchMinor;
-
-        $record['context']['user_agent']['device.name'] = $result->device->family;
-
-        return $record;
+        return [
+            'original' => $original,
+            'browser'  => [
+                'name'  => $result->ua->family,
+                'major' => $result->ua->major,
+                'minor' => $result->ua->minor,
+                'patch' => $result->ua->patch,
+            ],
+            'os' => [
+                'name'        => $result->os->family,
+                'major'       => $result->os->major,
+                'minor'       => $result->os->minor,
+                'patch'       => $result->os->patch,
+                'patch_minor' => $result->os->patchMinor,
+            ],
+            'device.name' => $result->device->family,
+        ];
     }
 }

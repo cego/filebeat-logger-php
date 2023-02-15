@@ -2,19 +2,41 @@
 
 namespace Cego;
 
+use Exception;
+use Throwable;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
+use Monolog\Handler\StreamHandler;
+
 class FilebeatLoggerFactory
 {
     /**
      * @param array $config
      *
-     * @return FilebeatLogger
+     * @throws Exception
+     *
+     * @return LoggerInterface
      */
-    public function __invoke(array $config): FilebeatLogger
+    public function __invoke(array $config): LoggerInterface
     {
         $channel = $config['channel'] ?? 'missing channel name';
+        $extras = $config['extras'] ?? [];
 
-        return ($config['rotating'] ?? false)
-            ? RotatingFilebeatLogger::createLogger($channel, $config['stream'] ?? 'storage/logs/laravel.log', $config['extras'] ?? [])
-            : FilebeatLogger::createLogger($channel, $config['stream'] ?? 'php://stdout', $config['extras'] ?? []);
+        $logger = new Logger($channel);
+
+        if ($config['rotating']) {
+            $handler = new RotatingFileStreamHandler($config['stream'] ?? 'storage/logs/laravel.log', 104857600, 5);
+        } else {
+            $handler = new StreamHandler($config['stream'] ?? 'php://stdout');
+        }
+        $handler->setFormatter(new FilebeatFormatter());
+
+        $logger->setHandlers([$handler]);
+        $logger->pushProcessor(new FilebeatContextProcessor($extras));
+        $logger->setExceptionHandler(function (Throwable $throwable): void {
+            error_log("$throwable");
+        });
+
+        return $logger;
     }
 }

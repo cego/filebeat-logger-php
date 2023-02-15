@@ -3,15 +3,11 @@
 namespace Cego;
 
 use Exception;
-use Monolog\Logger;
-use Psr\Log\LogLevel;
+use Monolog\Level;
+use Monolog\LogRecord;
 use Monolog\Handler\StreamHandler;
 
-/**
- * @phpstan-import-type Level from Logger
- * @phpstan-import-type LevelName from Logger
- */
-class RotatingFileHandler extends StreamHandler
+class RotatingFileStreamHandler extends StreamHandler
 {
     /** @var string */
     protected $filename;
@@ -29,14 +25,14 @@ class RotatingFileHandler extends StreamHandler
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param Level|LevelName|LogLevel::* $level
+     * @param Level $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
      *
      * @throws Exception
      */
-    public function __construct($filename, $maxFiles, $maxFileSize, $level = Logger::DEBUG, $bubble = true, $filePermission = null, $useLocking = false)
+    public function __construct($filename, $maxFiles, $maxFileSize, $level = Level::Debug, $bubble = true, $filePermission = null, $useLocking = false)
     {
         parent::__construct($filename, $level, $bubble, $filePermission, $useLocking);
 
@@ -53,6 +49,9 @@ class RotatingFileHandler extends StreamHandler
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function close(): void
     {
         parent::close();
@@ -62,7 +61,10 @@ class RotatingFileHandler extends StreamHandler
         }
     }
 
-    public function reset()
+    /**
+     * @inheritDoc
+     */
+    public function reset(): void
     {
         parent::reset();
 
@@ -71,7 +73,10 @@ class RotatingFileHandler extends StreamHandler
         }
     }
 
-    protected function write(array $record): void
+    /**
+     * @inheritDoc
+     */
+    protected function write(LogRecord $record): void
     {
         clearstatcache(true, $this->filename);
 
@@ -87,12 +92,7 @@ class RotatingFileHandler extends StreamHandler
         parent::write($record);
     }
 
-    /**
-     * Rotates the files.
-     *
-     * @return void
-     */
-    protected function rotate()
+    protected function rotate(): void
     {
         if ($this->maxFileSize === 0) {
             return;
