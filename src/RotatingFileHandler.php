@@ -4,10 +4,12 @@ namespace Cego;
 
 use Exception;
 use Monolog\Logger;
+use Psr\Log\LogLevel;
 use Monolog\Handler\StreamHandler;
 
 /**
- * @phpstan-type Level 100|200|250|300|400|500|550|600|'ALERT'|'alert'|'CRITICAL'|'critical'|'DEBUG'|'debug'|'EMERGENCY'|'emergency'|'ERROR'|'error'|'INFO'|'info'|'NOTICE'|'notice'|'WARNING'|'warning'
+ * @phpstan-import-type Level from Logger
+ * @phpstan-import-type LevelName from Logger
  */
 class RotatingFileHandler extends StreamHandler
 {
@@ -27,7 +29,7 @@ class RotatingFileHandler extends StreamHandler
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param Level $level
+     * @param Level|LevelName|LogLevel::* $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
