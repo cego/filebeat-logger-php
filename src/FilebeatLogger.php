@@ -6,6 +6,9 @@ use Throwable;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+/**
+ * @phpstan-type Level 100|200|250|300|400|500|550|600|'ALERT'|'alert'|'CRITICAL'|'critical'|'DEBUG'|'debug'|'EMERGENCY'|'emergency'|'ERROR'|'error'|'INFO'|'info'|'NOTICE'|'notice'|'WARNING'|'warning'
+ */
 class FilebeatLogger extends Logger
 {
     /**
@@ -56,7 +59,7 @@ class FilebeatLogger extends Logger
 
     /**
      * @param Throwable $throwable
-     * @param string $level
+     * @param Level $level
      */
     public function throwable(Throwable $throwable, $level = 'critical'): void
     {

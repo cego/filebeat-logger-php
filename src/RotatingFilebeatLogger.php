@@ -15,6 +15,7 @@ class RotatingFilebeatLogger extends FilebeatLogger
     {
         $maxFiles = 5;
         $maxFileSize = 104857600; // 100MB
+
         return [
             new RotatingFileHandler($stream, $maxFiles, $maxFileSize),
         ];

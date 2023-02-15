@@ -6,6 +6,9 @@ use Exception;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
+/**
+ * @phpstan-type Level 100|200|250|300|400|500|550|600|'ALERT'|'alert'|'CRITICAL'|'critical'|'DEBUG'|'debug'|'EMERGENCY'|'emergency'|'ERROR'|'error'|'INFO'|'info'|'NOTICE'|'notice'|'WARNING'|'warning'
+ */
 class RotatingFileHandler extends StreamHandler
 {
     /** @var string */
@@ -17,14 +20,14 @@ class RotatingFileHandler extends StreamHandler
     /** @var number */
     protected $maxFileSize;
 
-    /** @var boolean */
+    /** @var bool */
     protected $mustRotate;
 
     /**
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param string $level
+     * @param Level $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
