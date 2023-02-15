@@ -4,7 +4,6 @@ namespace Cego;
 
 use Throwable;
 use Monolog\Logger;
-use Psr\Log\LogLevel;
 use Monolog\Handler\StreamHandler;
 
 class FilebeatLogger extends Logger
@@ -56,9 +55,8 @@ class FilebeatLogger extends Logger
     }
 
     /**
-     * @phpstan-import-type Level from Logger
      * @param Throwable $throwable
-     * @param Level::* $level
+     * @param string $level
      */
     public function throwable(Throwable $throwable, $level = 'critical'): void
     {

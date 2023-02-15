@@ -5,7 +5,6 @@ namespace Cego;
 use Exception;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Psr\Log\LogLevel;
 
 class RotatingFileHandler extends StreamHandler
 {
@@ -22,12 +21,10 @@ class RotatingFileHandler extends StreamHandler
     protected $mustRotate;
 
     /**
-     * @phpstan-import-type Level from Logger
-     * @phpstan-import-type LevelName from Logger
      * @param string $filename
      * @param int $maxFiles
      * @param int $maxFileSize
-     * @param Level|LevelName|LogLevel $level
+     * @param string $level
      * @param bool $bubble
      * @param int|null $filePermission
      * @param bool $useLocking
