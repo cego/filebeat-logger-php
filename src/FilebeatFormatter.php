@@ -10,9 +10,6 @@ use Monolog\Formatter\FormatterInterface;
 
 class FilebeatFormatter implements FormatterInterface
 {
-    /**
-     * @inheritDoc
-     */
     public function format(LogRecord $record): string
     {
         $elasticRecord = [];
@@ -35,9 +32,6 @@ class FilebeatFormatter implements FormatterInterface
         return Utils::jsonEncode($elasticRecord) . "\n";
     }
 
-    /**
-     * @inheritDoc
-     */
     public function formatBatch(array $records): string
     {
         $lines = [];

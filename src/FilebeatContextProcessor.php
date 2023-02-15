@@ -24,9 +24,6 @@ class FilebeatContextProcessor implements ProcessorInterface
         return $record;
     }
 
-    /**
-     * @param array $extras
-     */
     public function __construct(array $extras = [])
     {
         $this->extras = $extras;
