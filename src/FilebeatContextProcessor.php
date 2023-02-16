@@ -14,12 +14,21 @@ class FilebeatContextProcessor implements ProcessorInterface
     public function __invoke(LogRecord $record): LogRecord
     {
         $record->extra = array_merge($record->extra, $this->extras);
-        $record->extra = array_merge($record->extra, ['http' => self::httpExtras()]);
-        $record->extra = array_merge($record->extra, ['url' => self::urlExtras()]);
-        $record->extra = array_merge($record->extra, ['client' => self::clientExtras()]);
+
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            $record->extra = array_merge($record->extra, ['http' => self::httpExtras()]);
+            $record->extra = array_merge($record->extra, ['url' => self::urlExtras()]);
+            $record->extra = array_merge($record->extra, ['user_agent' => self::userAgentExtras()]);
+            $record->extra = array_merge($record->extra, ['client' => self::clientExtras()]);
+        }
+
         $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
-        $record->extra = array_merge($record->extra, ['user_agent' => self::userAgentExtras()]);
-        $record->extra = array_merge($record->extra, ['error' => self::errorExtras($record)]);
+
+        $throwable = $record->context['exception'];
+
+        if ($throwable instanceof Throwable) {
+            $record->extra = array_merge($record->extra, ['error' => self::errorExtras($throwable)]);
+        }
 
         return $record;
     }
@@ -29,15 +38,8 @@ class FilebeatContextProcessor implements ProcessorInterface
         $this->extras = $extras;
     }
 
-    public static function errorExtras(LogRecord $record): array
+    public static function errorExtras(Throwable $throwable): array|null
     {
-        $throwable = $record->context['exception'] ?? null;
-        // If there are no throwable in the context, then we simply jump out here
-        if ( ! $throwable instanceof Throwable) {
-            return [];
-        }
-        unset($record->context['exception']);
-
         $message = $throwable->getMessage();
         $message = empty($message) ? get_class($throwable) . ' thrown with empty message' : $message;
 
@@ -100,12 +102,12 @@ class FilebeatContextProcessor implements ProcessorInterface
         ];
     }
 
-    private static function userAgentExtras(): array
+    private static function userAgentExtras(): array|null
     {
-        $original = $_SERVER['HTTP_USER_AGENT'];
+        $original = $_SERVER['HTTP_USER_AGENT'] ?? null;
 
         if ( ! isset($original)) {
-            return [];
+            return null;
         }
 
         try {

@@ -4,12 +4,11 @@ namespace Cego;
 
 use Throwable;
 use Monolog\Logger;
-use Psr\Log\LoggerInterface;
 use Monolog\Handler\StreamHandler;
 
 class FilebeatLoggerFactory
 {
-    public function __invoke(array $config): LoggerInterface
+    public function __invoke(array $config): Logger
     {
         $channel = $config['channel'] ?? 'missing channel name';
         $extras = $config['extras'] ?? [];

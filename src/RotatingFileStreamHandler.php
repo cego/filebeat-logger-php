@@ -12,15 +12,15 @@ class RotatingFileStreamHandler extends StreamHandler
     private string $filename;
     private int $maxFiles;
     private int $maxFileSize;
-    private bool $mustRotate;
+    private bool $mustRotate = false;
 
-    public function __construct(string $filename, int $maxFiles, int $maxFileSize, $level = Level::Debug, $bubble = true, $filePermission = null, $useLocking = false)
+    public function __construct(string $filename, int $maxFileSize, int $maxFiles, $level = Level::Debug, $bubble = true, $filePermission = null, $useLocking = false)
     {
         parent::__construct($filename, $level, $bubble, $filePermission, $useLocking);
 
         $this->filename = $filename;
-        $this->maxFiles = (int)$maxFiles;
-        $this->maxFileSize = (int)$maxFileSize;
+        $this->maxFiles = $maxFiles;
+        $this->maxFileSize = $maxFileSize;
 
         if ($this->maxFiles <= 0) {
             throw new Exception('maxFiles must be larger than 0');
@@ -65,6 +65,16 @@ class RotatingFileStreamHandler extends StreamHandler
         parent::write($record);
     }
 
+    private function rotationFilepath(string $filename, int $number): string
+    {
+        $info = pathinfo($filename);
+        $dirname = isset($info['dirname']) ? $info['dirname'] . '/' : '';
+        $filename = $info['filename'];
+        $extension = isset($info['extension']) ? '.' . $info['extension'] : '';
+
+        return "$dirname$filename.$number$extension";
+    }
+
     protected function rotate(): void
     {
         if ($this->maxFileSize === 0) {
@@ -72,12 +82,11 @@ class RotatingFileStreamHandler extends StreamHandler
         }
 
         for ($i = $this->maxFiles - 1; $i >= 1; $i--) {
-            $source = $this->filename . '.' . $i;
+            $source = $this->rotationFilepath($this->filename, $i);
             clearstatcache(true, $source);
 
             if (file_exists($source)) {
-                $target = $this->filename . '.' . ($i + 1);
-
+                $target = $this->rotationFilepath($this->filename, ($i + 1));
                 rename($source, $target);
             }
         }
@@ -85,8 +94,7 @@ class RotatingFileStreamHandler extends StreamHandler
         clearstatcache(true, $this->filename);
 
         if (file_exists($this->filename)) {
-            $target = $this->filename . '.1';
-
+            $target = $this->rotationFilepath($this->filename, 1);
             rename($this->filename, $target);
         }
 
