@@ -6,9 +6,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4|^8.0",
-        "monolog/monolog": "^2.1.1",
-        "ua-parser/uap-php": "^v3.9.14"
+        "php": ">=8.1",
+        "monolog/monolog": "3.x.x",
+        "ua-parser/uap-php": "3.x.x"
     },
     "autoload": {
         "psr-4": {
@@ -16,7 +16,7 @@
         }
     },
     "require-dev": {
-        "cego/php-cs-fixer": "^1.0.0",
-        "phpstan/phpstan": "^1.0.0"
+        "cego/php-cs-fixer": "1.0.0",
+        "phpstan/phpstan": "1.9.17"
     }
 }
