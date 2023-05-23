@@ -36,7 +36,7 @@ class FilebeatContextProcessor implements ProcessorInterface
         $this->extras = $extras;
     }
 
-    public static function errorExtras(Throwable $throwable): array|null
+    public static function errorExtras(Throwable $throwable): array
     {
         $message = $throwable->getMessage();
         $message = empty($message) ? get_class($throwable) . ' thrown with empty message' : $message;
