@@ -25,7 +25,7 @@ class FilebeatContextProcessor implements ProcessorInterface
         $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
 
         if (isset($record->context['exception']) && $record->context['exception'] instanceof Throwable) {
-            $record->extra = array_merge($record->extra, ['error' => self::errorExtras($record->context['exception'])]);
+            $record->extra = array_merge($record->extra, self::errorExtras($record->context['exception']));
         }
 
         return $record;
@@ -36,7 +36,7 @@ class FilebeatContextProcessor implements ProcessorInterface
         $this->extras = $extras;
     }
 
-    public static function errorExtras(Throwable $throwable): array|null
+    public static function errorExtras(Throwable $throwable): array
     {
         $message = $throwable->getMessage();
         $message = empty($message) ? get_class($throwable) . ' thrown with empty message' : $message;
