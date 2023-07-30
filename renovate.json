@@ -3,5 +3,6 @@
     "config:base",
     ":preserveSemverRanges",
     ":disableDependencyDashboard"
-  ]
+  ],
+  "recreateWhen": "always"
 }
