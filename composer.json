@@ -6,7 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": "8.x.x",
         "monolog/monolog": "3.x.x",
         "ua-parser/uap-php": "3.x.x"
     },
