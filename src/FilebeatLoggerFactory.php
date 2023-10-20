@@ -17,6 +17,8 @@ class FilebeatLoggerFactory
 
         if ($config['rotating']) {
             $handler = new RotatingFileStreamHandler($config['stream'] ?? 'storage/logs/laravel.log', 104857600, 5);
+        } elseif (isset($config['handler'])) {
+            $handler = $config['handler'];
         } else {
             $handler = new StreamHandler($config['stream'] ?? 'php://stdout');
         }
