@@ -26,6 +26,13 @@ class FilebeatLoggerFactory
 
         $logger->setHandlers([$handler]);
         $logger->pushProcessor(new FilebeatContextProcessor($extras));
+
+        if (isset($config['httpContextProcessor'])) {
+            $logger->pushProcessor($config['httpContextProcessor']);
+        } else {
+            $logger->pushProcessor(new FilebeatHttpContextProcessor());
+        }
+
         $logger->setExceptionHandler(function (Throwable $throwable): void {
             error_log("$throwable");
         });
