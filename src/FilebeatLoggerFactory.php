@@ -28,7 +28,7 @@ class FilebeatLoggerFactory
         $logger->pushProcessor(new FilebeatContextProcessor($extras));
 
         if (isset($config['httpContextProcessor'])) {
-            $logger->pushProcessor($config['httpContextProcessor']);
+            $logger->pushProcessor(new $config['httpContextProcessor']());
         } else {
             $logger->pushProcessor(new FilebeatHttpContextProcessor());
         }
