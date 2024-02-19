@@ -3,8 +3,10 @@
 namespace Cego;
 
 use Throwable;
+use TypeError;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Processor\ProcessorInterface;
 
 class FilebeatLoggerFactory
 {
@@ -28,7 +30,13 @@ class FilebeatLoggerFactory
         $logger->pushProcessor(new FilebeatContextProcessor($extras));
 
         if (isset($config['httpContextProcessor'])) {
-            $logger->pushProcessor($config['httpContextProcessor']);
+            $processor = new $config['httpContextProcessor']();
+
+            if ( ! $processor instanceof ProcessorInterface) {
+                throw new TypeError('The httpContextProcessor must be an reference to a class implementing Monolog\Processor\ProcessorInterface');
+            }
+
+            $logger->pushProcessor($processor);
         } else {
             $logger->pushProcessor(new FilebeatHttpContextProcessor());
         }
