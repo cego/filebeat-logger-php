@@ -8,6 +8,9 @@ use Monolog\Processor\ProcessorInterface;
 
 class FilebeatContextProcessor implements ProcessorInterface
 {
+    /**
+     * @var array<array-key, mixed>
+     */
     private array $extras;
 
     public function __invoke(LogRecord $record): LogRecord
@@ -23,11 +26,19 @@ class FilebeatContextProcessor implements ProcessorInterface
         return $record;
     }
 
+    /**
+     * @param array<array-key, mixed> $extras
+     */
     public function __construct(array $extras = [])
     {
         $this->extras = $extras;
     }
 
+    /**
+     * @param Throwable $throwable
+     *
+     * @return array<array-key, mixed>
+     */
     public static function errorExtras(Throwable $throwable): array
     {
         $message = $throwable->getMessage();
@@ -52,6 +63,9 @@ class FilebeatContextProcessor implements ProcessorInterface
         ];
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function phpExtras(): array
     {
         return [

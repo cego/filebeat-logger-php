@@ -14,7 +14,7 @@ use Carbon\Carbon;
 class ECS
 {
     /**
-     * @var array<string, mixed>
+     * @var array<array-key, mixed>
      */
     protected $data = [];
 
@@ -81,7 +81,7 @@ class ECS
             $eventData['reason'] = $reason;
         }
 
-        $this->data['event'] = array_merge($this->data['event'] ?? [], $eventData);
+        $this->data['event'] = $eventData;
 
         return $this;
     }
