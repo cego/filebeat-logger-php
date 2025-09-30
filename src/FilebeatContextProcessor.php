@@ -16,6 +16,8 @@ class FilebeatContextProcessor implements ProcessorInterface
 
         $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
 
+        $record->extra = array_merge($record->extra, self::traceExtras());
+
 
 
         if (isset($record->context['exception']) && $record->context['exception'] instanceof Throwable) {
