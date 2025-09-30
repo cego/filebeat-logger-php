@@ -21,8 +21,6 @@ class FilebeatContextProcessor implements ProcessorInterface
 
         $record->extra = array_merge($record->extra, self::traceExtras());
 
-
-
         if (isset($record->context['exception']) && $record->context['exception'] instanceof Throwable) {
             $record->extra = array_merge($record->extra, self::errorExtras($record->context['exception']));
         }
@@ -81,26 +79,26 @@ class FilebeatContextProcessor implements ProcessorInterface
 
     public function traceExtras(): array
     {
-        if(class_exists(\OpenTelemetry\Context\Context::class)){
+        if (class_exists(\OpenTelemetry\Context\Context::class)) {
             $context ??= \OpenTelemetry\Context\Context::getCurrent();
             $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
+
             return [
                 'trace' => [
                     'id' => $spanContext->getTraceId(),
-                ]
+                ],
             ];
         }
 
-        if(class_exists(\Elastic\Apm\ElasticApm::class)) {
+        if (class_exists(\Elastic\Apm\ElasticApm::class)) {
             $traceId = \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
 
             return [
                 'trace' => [
                     'id' => $traceId,
-                ]
+                ],
             ];
         }
-
 
     }
 }
