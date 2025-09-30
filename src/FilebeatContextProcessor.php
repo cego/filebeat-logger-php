@@ -16,6 +16,8 @@ class FilebeatContextProcessor implements ProcessorInterface
 
         $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
 
+
+
         if (isset($record->context['exception']) && $record->context['exception'] instanceof Throwable) {
             $record->extra = array_merge($record->extra, self::errorExtras($record->context['exception']));
         }
@@ -59,5 +61,16 @@ class FilebeatContextProcessor implements ProcessorInterface
             'argc'        => $_SERVER['argc'] ?? null,
             'argv_string' => $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null,
         ];
+    }
+
+    public function traceExtras(): array
+    {
+        if(class_exists(\OpenTelemetry\SDK\Trace\TracerProvider)
+
+        if(class_exists(\Elastic\Apm\ElasticApm::class)) {
+            \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
+        }
+
+
     }
 }
