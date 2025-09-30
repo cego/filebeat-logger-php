@@ -86,7 +86,7 @@ class FilebeatContextProcessor implements ProcessorInterface
             $context = \OpenTelemetry\Context\Context::getCurrent();
             $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
 
-            if($spanContext->isValid()){
+            if ($spanContext->isValid()) {
                 return [
                     'trace' => [
                         'id' => $spanContext->getTraceId(),
