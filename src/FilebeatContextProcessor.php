@@ -77,10 +77,13 @@ class FilebeatContextProcessor implements ProcessorInterface
         ];
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function traceExtras(): array
     {
         if (class_exists(\OpenTelemetry\Context\Context::class)) {
-            $context ??= \OpenTelemetry\Context\Context::getCurrent();
+            $context = \OpenTelemetry\Context\Context::getCurrent();
             $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
 
             return [
@@ -100,5 +103,6 @@ class FilebeatContextProcessor implements ProcessorInterface
             ];
         }
 
+        return [];
     }
 }
