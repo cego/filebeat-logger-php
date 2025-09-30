@@ -65,10 +65,24 @@ class FilebeatContextProcessor implements ProcessorInterface
 
     public function traceExtras(): array
     {
-        if(class_exists(\OpenTelemetry\SDK\Trace\TracerProvider)
+        if(class_exists(\OpenTelemetry\Context\Context::class)){
+            $context ??= \OpenTelemetry\Context\Context::getCurrent();
+            $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
+            return [
+                'trace' => [
+                    'id' => $spanContext->getTraceId(),
+                ]
+            ];
+        }
 
         if(class_exists(\Elastic\Apm\ElasticApm::class)) {
-            \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
+            $traceId = \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
+
+            return [
+                'trace' => [
+                    'id' => $traceId,
+                ]
+            ];
         }
 
 
