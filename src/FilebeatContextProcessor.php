@@ -19,6 +19,8 @@ class FilebeatContextProcessor implements ProcessorInterface
 
         $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
 
+        $record->extra = array_merge($record->extra, self::traceExtras());
+
         if (isset($record->context['exception']) && $record->context['exception'] instanceof Throwable) {
             $record->extra = array_merge($record->extra, self::errorExtras($record->context['exception']));
         }
@@ -73,5 +75,39 @@ class FilebeatContextProcessor implements ProcessorInterface
             'argc'        => $_SERVER['argc'] ?? null,
             'argv_string' => $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null,
         ];
+    }
+
+    /**
+     * @return array<array-key, mixed>
+     */
+    public function traceExtras(): array
+    {
+        if (class_exists(\OpenTelemetry\Context\Context::class)) {
+            $context = \OpenTelemetry\Context\Context::getCurrent();
+            $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
+
+            if ($spanContext->isValid()) {
+                return [
+                    'trace' => [
+                        'id' => $spanContext->getTraceId(),
+                    ],
+                ];
+            }
+        }
+
+        if (class_exists(\Elastic\Apm\ElasticApm::class)) {
+            $traceId = \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
+
+            // Only return a trace id if valid, i.e. not all zeros
+            if ($traceId !== '00000000000000000000000000000000') {
+                return [
+                    'trace' => [
+                        'id' => $traceId,
+                    ],
+                ];
+            }
+        }
+
+        return [];
     }
 }

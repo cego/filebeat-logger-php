@@ -18,6 +18,15 @@
     },
     "require-dev": {
         "cego/php-cs-fixer": "^2",
-        "phpstan/phpstan": "^2"
+        "phpstan/phpstan": "^2",
+        "open-telemetry/sdk": "^1.8",
+        "symfony/http-client": "^7.3",
+        "nyholm/psr7": "^1.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "tbachert/spi": true
+        }
     }
 }

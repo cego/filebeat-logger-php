@@ -40,10 +40,20 @@ class FilebeatHttpContextProcessor implements ProcessorInterface
      */
     public static function httpExtras(): array
     {
+        $allowedHeaders = ['HTTP_CF_RAY' => 'CF-Ray'];
+
         return [
             'request' => [
-                'id'     => $_SERVER['HTTP_CF_RAY'] ?? null,
-                'method' => $_SERVER['REQUEST_METHOD'] ?? null,
+                'id'      => $_SERVER['HTTP_CF_RAY'] ?? null,
+                'method'  => $_SERVER['REQUEST_METHOD'] ?? null,
+                'headers' => // Map such that $_SERVER['HTTP_CF_RAY'] becomes ['CF-Ray' => 'value']
+                    array_reduce(array_keys($allowedHeaders), function ($carry, $key) use ($allowedHeaders) {
+                        if (isset($_SERVER[$key])) {
+                            $carry[$allowedHeaders[$key]] = $_SERVER[$key];
+                        }
+
+                        return $carry;
+                    }, []),
             ],
         ];
     }
