@@ -86,21 +86,26 @@ class FilebeatContextProcessor implements ProcessorInterface
             $context = \OpenTelemetry\Context\Context::getCurrent();
             $spanContext = \OpenTelemetry\API\Trace\Span::fromContext($context)->getContext();
 
-            return [
-                'trace' => [
-                    'id' => $spanContext->getTraceId(),
-                ],
-            ];
+            if($spanContext->isValid()){
+                return [
+                    'trace' => [
+                        'id' => $spanContext->getTraceId(),
+                    ],
+                ];
+            }
         }
 
         if (class_exists(\Elastic\Apm\ElasticApm::class)) {
             $traceId = \Elastic\Apm\ElasticApm::getCurrentTransaction()->getTraceId();
 
-            return [
-                'trace' => [
-                    'id' => $traceId,
-                ],
-            ];
+            // Only return a trace id if valid, i.e. not all zeros
+            if ($traceId !== '00000000000000000000000000000000') {
+                return [
+                    'trace' => [
+                        'id' => $traceId,
+                    ],
+                ];
+            }
         }
 
         return [];
