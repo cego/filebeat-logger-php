@@ -8,7 +8,8 @@
     "require": {
         "php": "8.x.x",
         "monolog/monolog": "3.x.x",
-        "ua-parser/uap-php": "3.x.x"
+        "ua-parser/uap-php": "3.x.x",
+        "nesbot/carbon": "^3.9"
     },
     "autoload": {
         "psr-4": {
@@ -16,7 +17,7 @@
         }
     },
     "require-dev": {
-        "cego/php-cs-fixer": "2.x",
-        "phpstan/phpstan": "1.x.x"
+        "cego/php-cs-fixer": "^2",
+        "phpstan/phpstan": "^2"
     }
 }

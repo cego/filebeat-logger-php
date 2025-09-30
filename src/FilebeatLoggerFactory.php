@@ -10,6 +10,11 @@ use Monolog\Processor\ProcessorInterface;
 
 class FilebeatLoggerFactory
 {
+    /**
+     * @param array<array-key, mixed> $config
+     *
+     * @return Logger
+     */
     public function __invoke(array $config): Logger
     {
         $channel = $config['channel'] ?? 'missing channel name';
