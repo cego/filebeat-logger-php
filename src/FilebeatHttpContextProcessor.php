@@ -21,6 +21,9 @@ class FilebeatHttpContextProcessor implements ProcessorInterface
         return $record;
     }
 
+    /**
+     * @return array{ip: mixed|null, address: mixed|null, geo: array{country_iso_code: mixed|null}}
+     */
     public static function clientExtras(): array
     {
         return [
@@ -32,6 +35,9 @@ class FilebeatHttpContextProcessor implements ProcessorInterface
         ];
     }
 
+    /**
+     * @return array{request: array{id: mixed|null, method: mixed|null}}
+     */
     public static function httpExtras(): array
     {
         return [
@@ -42,6 +48,9 @@ class FilebeatHttpContextProcessor implements ProcessorInterface
         ];
     }
 
+    /**
+     * @return array{path: mixed|null, method: mixed|null, referer: mixed|null, domain: mixed|null}
+     */
     public static function urlExtras(): array
     {
         return [
@@ -52,6 +61,9 @@ class FilebeatHttpContextProcessor implements ProcessorInterface
         ];
     }
 
+    /**
+     * @return array<array-key, mixed>|null
+     */
     private static function userAgentExtras(): array|null
     {
         $original = $_SERVER['HTTP_USER_AGENT'] ?? null;
