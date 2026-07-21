@@ -17,7 +17,7 @@ class FilebeatContextProcessor implements ProcessorInterface
     {
         $record->extra = array_merge($record->extra, $this->extras);
 
-        $record->extra = array_merge($record->extra, ['php' => self::phpExtras()]);
+        $record->extra = array_merge($record->extra, ['process' => self::processExtras()]);
 
         $record->extra = array_merge($record->extra, self::traceExtras());
 
@@ -68,12 +68,16 @@ class FilebeatContextProcessor implements ProcessorInterface
     /**
      * @return array<array-key, mixed>
      */
-    public static function phpExtras(): array
+    public static function processExtras(): array
     {
+        $arguments = [PHP_BINARY, ...($_SERVER['argv'] ?? [])];
+
         return [
-            'sapi'        => PHP_SAPI,
-            'argc'        => $_SERVER['argc'] ?? null,
-            'argv_string' => $_SERVER['argv'] ?? null ? implode(' ', $_SERVER['argv']) : null,
+            'pid'          => getmypid(),
+            'executable'   => PHP_BINARY,
+            'args'         => $arguments,
+            'args_count'   => count($arguments),
+            'command_line' => implode(' ', $arguments),
         ];
     }
 
