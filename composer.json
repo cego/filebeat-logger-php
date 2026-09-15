@@ -20,7 +20,7 @@
         "cego/php-cs-fixer": "^2",
         "phpstan/phpstan": "^2",
         "open-telemetry/sdk": "^1.8",
-        "symfony/http-client": "^7.3",
+        "symfony/http-client": "^8.0",
         "nyholm/psr7": "^1.8"
     },
     "config": {
